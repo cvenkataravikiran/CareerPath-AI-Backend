@@ -2,7 +2,7 @@
 This is the backend for CareerPath AI, a full-stack web application designed to be a personal career co-pilot. This server is built with Flask and Python, and it handles all logics, database interactions, user authentication, and communication with the AI services.
 ---
 # Frontend Repo 
-  Link : https://github.com/cvenkataravikiran/CareerPath-AI-Frontend.git
+Link : https://github.com/cvenkataravikiran/CareerPath-AI-Frontend.git
 
 ## ✨ Core Features
 
