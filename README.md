@@ -3,7 +3,7 @@ This is the backend for CareerPath AI, a full-stack web application designed to 
 ---
 # Frontend Repo 
 Link : https://github.com/cvenkataravikiran/CareerPath-AI-Frontend.git
-
+---
 ## ✨ Core Features
 
 - **RESTful API:** A well-structured API built with Flask and Blueprints for modularity.
