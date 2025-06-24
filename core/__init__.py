@@ -25,7 +25,7 @@ def create_app(config_name='default'):
     # Define the list of origins that are allowed to make requests to your API.
     # This includes your deployed frontend on Vercel and your local development environment.
     origins = [
-        "https://career-path-ai-ochre.vercel.app",  # Production Frontend
+        "https://career-path-ai-ochre.vercel.app/",  # Production Frontend
         "http://localhost:3000",                   # Local React Dev Server
         "http://127.0.0.1:3000"                    # Alternative Local
     ]
