@@ -16,22 +16,22 @@ def create_app(config_name='default'):
     app.config.from_object(config[config_name])
 
     # ======================= START: THE FIX =======================
-    # This is a more robust and explicit CORS configuration that is less likely
-    # to fail during preflight checks on production servers.
-
-    # Define the exact origin of your frontend.
-    origins = "https://career-path-ai-ochre.vercel.app"
+    # Define a LIST of allowed origins. This is the key change.
+    # This ensures that both your deployed Vercel app AND your local
+    # development server can communicate with the backend.
+    origins = [
+        "https://career-path-ai-ochre.vercel.app",  # Production
+        "http://localhost:3000",                   # Local Development
+        "http://127.0.0.1:3000"                    # Also Local Development
+    ]
     
-    # We will now initialize CORS with very specific parameters.
+    # The rest of the CORS configuration remains the same, but it will
+    # now use the list of origins instead of a single string.
     CORS(
         app,
-        # This allows requests from your specific Vercel URL.
         origins=origins,
-        # This allows cookies and authorization headers to be sent.
         supports_credentials=True,
-        # This explicitly lists the HTTP methods your frontend is allowed to use.
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        # This explicitly lists the custom headers your frontend is allowed to send.
         allow_headers=["Content-Type", "Authorization"]
     )
     # ======================== END: THE FIX ========================
