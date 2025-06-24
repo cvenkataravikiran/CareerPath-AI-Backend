@@ -1,8 +1,8 @@
 # CareerPath-AI-Backend
-This is the backend for CareerPath AI, a full-stack web application designed to be a personal career co-pilot. This server is built with Flask and Python, and it handles all business logic, database interactions, user authentication, and communication with the AI services.
+This is the backend for CareerPath AI, a full-stack web application designed to be a personal career co-pilot. This server is built with Flask and Python, and it handles all logics, database interactions, user authentication, and communication with the AI services.
 ---
 # Frontend Repo 
-  Link : 
+  Link : https://github.com/cvenkataravikiran/CareerPath-AI-Frontend.git
 
 ## ✨ Core Features
 
@@ -73,6 +73,6 @@ This is the backend for CareerPath AI, a full-stack web application designed to 
 
 5.  **Run the Flask server:**
     ```
-    flask run
+    python run.py
     ```
     The server will start, typically on `http://127.0.0.1:5000`
