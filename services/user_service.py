@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 import cloudinary.uploader
 
 def get_user_profile(user_id):
-    user = mongo.db.users.find_one({'_id': ObjectId(user_id)}, {'password_hash': 0})
+    user = mongo.db.users.find_one({'_id': ObjectId(user_id)}, {'password': 0})
     if not user:
         raise Exception("User not found")
     user['_id'] = str(user['_id'])

@@ -23,11 +23,15 @@ def login_user(email, password):
     """
     Authenticates a user and returns their data and a JWT if successful.
     """
+    print(f"[DEBUG] Attempting login for email: {email}")
     data = mongo.db.users.find_one({"email": email})
     if not data:
+        print("[DEBUG] No user found with that email.")
         return { 'message': "Invalid email or password" }, 401
     user = User.from_dict(data)
+    print(f"[DEBUG] User found. Stored hash: {user.password}")
     if user and user.check_password(password):
+        print("[DEBUG] Password check passed.")
         token_payload = {
             'public_id': user.public_id,
             'exp': datetime.utcnow() + timedelta(hours=24)
@@ -38,4 +42,5 @@ def login_user(email, password):
             algorithm="HS256"
         )
         return { 'token': token, 'name': user.name, 'email': user.email }, 200
+    print("[DEBUG] Password check failed.")
     return { 'message': "Invalid email or password" }, 401
