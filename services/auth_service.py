@@ -1,54 +1,41 @@
-
+# services/auth_service.py
+from models.user_model import User
+from datetime import datetime, timedelta
+import jwt
+from flask import current_app
 from core.db import mongo
-from core import bcrypt
-from flask_jwt_extended import create_access_token
-import datetime
+
 
 def register_user(name, email, password):
-    users = mongo.db.users
-    existing_user = users.find_one({'email': email})
-    if existing_user:
-        raise Exception("User with this email already exists")
+    """
+    Registers a new user, hashes their password, and saves them to the database.
+    """
+    existing = mongo.db.users.find_one({"email": email})
+    if existing:
+        raise ValueError("This email is already registered.")
 
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    
-    # Add all fields from your ProfilePage.js
-    new_user = {
-        "name": name,
-        "email": email,
-        "password_hash": hashed_password,
-        "role": "user",
-        "created_at": datetime.datetime.utcnow(),
-        "headline": "Aspiring Professional",
-        "phone": "",
-        "linkedin": "",
-        "github": "",
-        "photo": "" # Starts with no photo
-    }
-    
-    users.insert_one(new_user)
-    return {"message": "User registered successfully"}
+    user = User(name=name, email=email, password=password, created_at=datetime.utcnow())
+    user_dict = user.to_dict()
+    mongo.db.users.insert_one(user_dict)
+    return True
 
 def login_user(email, password):
-    users = mongo.db.users
-    user = users.find_one({'email': email})
-
-    if user and bcrypt.check_password_hash(user['password_hash'], password):
-        user_id = str(user['_id'])
-        # Prepare user data to send to the frontend, excluding sensitive info
-        user_data_for_token = {
-            "id": user_id,
-            "name": user.get('name'),
-            "email": user.get('email'),
-            "headline": user.get('headline'),
-            "phone": user.get('phone'),
-            "linkedin": user.get('linkedin'),
-            "github": user.get('github'),
-            "photo": user.get('photo')
+    """
+    Authenticates a user and returns their data and a JWT if successful.
+    """
+    data = mongo.db.users.find_one({"email": email})
+    if not data:
+        return { 'message': "Invalid email or password" }, 401
+    user = User.from_dict(data)
+    if user and user.check_password(password):
+        token_payload = {
+            'public_id': user.public_id,
+            'exp': datetime.utcnow() + timedelta(hours=24)
         }
-        
-        access_token = create_access_token(identity=user_id, expires_delta=datetime.timedelta(days=7))
-        # The frontend expects the user data and the token together
-        return {**user_data_for_token, "access_token": access_token}
-    else:
-        raise Exception("Invalid email or password")
+        token = jwt.encode(
+            token_payload,
+            current_app.config['SECRET_KEY'],
+            algorithm="HS256"
+        )
+        return { 'token': token, 'name': user.name, 'email': user.email }, 200
+    return { 'message': "Invalid email or password" }, 401
