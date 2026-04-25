@@ -43,7 +43,7 @@ def get_goal_from_resume_text(text):
     try:
         # UPDATED: The API call is now to Groq
         response = client.chat.completions.create(
-            model="llama3-8b-8192", # Using a fast model on Groq
+            model="llama-3.1-8b-instant", # Using a fast model on Groq
             messages=[
                 {"role": "system", "content": "You are an expert HR analyst who is skilled at identifying career roles from resumes. Respond only with the job title."},
                 {"role": "user", "content": prompt}

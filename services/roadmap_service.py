@@ -28,7 +28,7 @@ def generate_roadmap_from_text(user_id, career_goal):
         # The API call is IDENTICAL to the OpenAI v1.0+ code
         response = client.chat.completions.create(
             # We use a recommended open-source model available on Groq, like Llama 3 or Mistral
-            model="llama3-8b-8192", 
+            model="llama-3.1-8b-instant", 
             messages=[
                 {"role": "system", "content": "You are a helpful AI assistant that only responds with valid JSON."},
                 {"role": "user", "content": prompt}
