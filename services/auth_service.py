@@ -1,8 +1,8 @@
 # services/auth_service.py
 from models.user_model import User
-from datetime import datetime, timedelta
-import jwt
+from datetime import datetime
 from flask import current_app
+from flask_jwt_extended import create_access_token, create_refresh_token
 from core.db import mongo
 
 
@@ -21,7 +21,7 @@ def register_user(name, email, password):
 
 def login_user(email, password):
     """
-    Authenticates a user and returns their data and a JWT if successful.
+    Authenticates a user and returns their data with access and refresh tokens if successful.
     """
     print(f"[DEBUG] Attempting login for email: {email}")
     data = mongo.db.users.find_one({"email": email})
@@ -32,15 +32,21 @@ def login_user(email, password):
     print(f"[DEBUG] User found. Stored hash: {user.password}")
     if user and user.check_password(password):
         print("[DEBUG] Password check passed.")
-        token_payload = {
-            'public_id': user.public_id,
-            'exp': datetime.utcnow() + timedelta(hours=24)
-        }
-        token = jwt.encode(
-            token_payload,
-            current_app.config['SECRET_KEY'],
-            algorithm="HS256"
-        )
-        return { 'token': token, 'name': user.name, 'email': user.email }, 200
+        
+        # Create both access and refresh tokens using Flask-JWT-Extended
+        access_token = create_access_token(identity=user.public_id)
+        refresh_token = create_refresh_token(identity=user.public_id)
+        
+        return {
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user': {
+                'id': user.public_id,
+                'name': user.name,
+                'email': user.email,
+                'profile_photo': user.profile_photo,
+                'planner': user.planner
+            }
+        }, 200
     print("[DEBUG] Password check failed.")
     return { 'message': "Invalid email or password" }, 401
